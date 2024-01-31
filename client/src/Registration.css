@@ -1,0 +1,51 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+.form-content{
+    background-color: grey;
+    padding: 20px;
+    width: 300px;
+    border-style: solid;
+    border-color: black;
+}
+
+h2{
+    margin-bottom: 20px;
+}
+
+
+.form{
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+form input{
+    margin-bottom: 20px;
+}
+
+.form-label{
+    color: greenyellow;
+}
+
+.btn{
+    height: 40px;
+    width: 100%;
+    background-color: teal;
+}
+
+.btn:hover{
+    background-color: black;
+    color: white;
+    cursor: pointer;
+}
+
+.field{
+    height: 30px;
+    width: 100%;
+
+}
