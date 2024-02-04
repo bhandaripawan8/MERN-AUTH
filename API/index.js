@@ -3,6 +3,7 @@ const app = express();
 const cors = require('cors');
 const mongoose = require('mongoose');
 const User = require('./Models/User.js');
+const jwt = require('jsonwebtoken');
 
 app.use(cors());
 app.use(express.json());
@@ -10,7 +11,6 @@ app.use(express.json());
 app.listen(3001, () => {
     console.log('listening to port 3001');
 });
-
 
 const mongoUrl = 'mongodb+srv://pawanb78:xkKNHL8vvsY4d246@cluster0.gkafhn9.mongodb.net/mern-auth';
 
@@ -29,7 +29,7 @@ app.post('/api/registration', async (req, res) => {
         const existingUser = await User.findOne({ email: req.body.email });
 
         if (existingUser) {
-            return res.status(400).json({ status: 'error', error: 'Email already exists' });
+            return res.status(400).json({ status: 'error', error: 'Email already exists, please log in'});
         }
         await User.create({
             name: req.body.name,
@@ -45,14 +45,43 @@ app.post('/api/registration', async (req, res) => {
 
 
 app.post('/api/login', async (req, res) => {
-    try {
-        const user = await User.findOne({ email: req.body.email, password: req.body.password });
-        if (user) {
-            res.json({ status: 'ok' });
-        } else {
-            res.json({ status: 'error', error: 'invalid credentials' });
-        }
-    } catch (err) {
-        res.json({ status: 'error', error: 'unexpected error' });
-    }
-});
+	const user = await User.findOne({
+		email: req.body.email,
+	})
+	if (!user) {
+		return res.json({ status: 'error', error: 'Invalid login' })
+	}
+	const isPasswordValid = await bcrypt.compare(
+		req.body.password,
+		user.password
+	)
+	if (isPasswordValid) {
+		const token = jwt.sign(
+			{
+				name: user.name,
+				email: user.email,
+			},
+			'secret123'
+		)
+		return res.json({ status: 'ok', user: token })
+	} else {
+		return res.json({ status: 'error', user: false })
+	}
+})
+
+app.post('/api/quote', async (req, res) => {
+	const token = req.headers['x-access-token']
+
+	try {
+		const decoded = jwt.verify(token, 'secret123')
+		const email = decoded.email
+		await User.updateOne(
+			{ email: email },
+			{ $set: { quote: req.body.quote } }
+		)
+		return res.json({ status: 'ok' })
+	} catch (error) {
+		console.log(error)
+		res.json({ status: 'error', error: 'invalid token' })
+	}
+})

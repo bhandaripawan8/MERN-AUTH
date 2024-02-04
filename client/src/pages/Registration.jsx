@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import './Registration.css';
-import {useNavigate} from 'react-router-dom';
+import '../pages/Registration.css';
 
 export default function Registration() {
     const [name, setname] = useState('');
@@ -9,7 +8,6 @@ export default function Registration() {
     const [showErrorMessage, setshowErrorMessage] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const navigate = useNavigate();
 
     async function handleForm(e) {
         e.preventDefault();
@@ -18,10 +16,8 @@ export default function Registration() {
             alert('Please fill the required fields');
             return;
         }
-
         try {
             setIsSubmitting(true);
-
             const response = await fetch('http://localhost:3001/api/registration', {
                 method: 'POST',
                 headers: {
@@ -36,18 +32,20 @@ export default function Registration() {
 
             if (!response.ok) {
                 console.log('Registration error:', response);
+                setemail('');
+                setshowErrorMessage(true);
                 return;
             }
 
             const responseData = await response.json();
             if (responseData.status === 'ok') {
                 console.log('Registration successful');
-                navigate('api/login');
-            } else if (responseData.status === 'error' && responseData.error === 'email already exists') {
-                setemail('');
-                setshowErrorMessage(true);
+                alert('Registration successful, welcome to your App');
+                setshowErrorMessage(false);
             } else {
                 console.log('Registration error:', responseData);
+                setemail('');
+                setshowErrorMessage(true);
             }
         } catch (error) {
             console.error('An error occurred during registration:', error);
@@ -81,7 +79,8 @@ export default function Registration() {
                         <button className='btn' type="submit" disabled={isSubmitting}>
                             {isSubmitting ? 'Submitting...' : 'Submit'}
                         </button>
-                        {showErrorMessage && <p>Email address already exists</p>}
+                        <br/>
+                        {showErrorMessage && <p>Email address already exists, please login.</p>}
                     </form>
                 </div>
             </div>
