@@ -3,7 +3,7 @@ import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import React from 'react'
 import Registration from './Registration';
 import Login from './Login';
-import Dashboard from './Dashboard';
+// import Dashboard from './Dashboard';
 
 export default function App() {
 
@@ -13,7 +13,7 @@ export default function App() {
         <BrowserRouter>
         <Routes>
           <Route path='/'></Route>
-          <Route path='/dashboard' exact Component = {Dashboard}></Route>
+          {/* <Route path='/dashboard' exact Component = {Dashboard}></Route> */}
           <Route path='/registration' exact Component={Registration}></Route>
           <Route path='/login' exact Component={Login}></Route>
         </Routes>

@@ -13,7 +13,6 @@ app.listen(3001, () => {
 });
 
 const mongoUrl = 'mongodb+srv://pawanb78:xkKNHL8vvsY4d246@cluster0.gkafhn9.mongodb.net/mern-auth';
-
 mongoose.connect(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true });
 const db = mongoose.connection;
 db.on('error', (err) => {
@@ -22,7 +21,6 @@ db.on('error', (err) => {
 db.once('open', () => {
     console.log('Connection successful');
 });
-
 
 app.post('/api/registration', async (req, res) => {
     try {
@@ -43,7 +41,6 @@ app.post('/api/registration', async (req, res) => {
     }
 });
 
-
 app.post('/api/login', async (req, res) => {
 	const user = await User.findOne({
 		email: req.body.email,
@@ -51,10 +48,7 @@ app.post('/api/login', async (req, res) => {
 	if (!user) {
 		return res.json({ status: 'error', error: 'Invalid login' })
 	}
-	const isPasswordValid = await bcrypt.compare(
-		req.body.password,
-		user.password
-	)
+	const isPasswordValid = await bcrypt.compare(req.body.password,user.password)
 	if (isPasswordValid) {
 		const token = jwt.sign(
 			{
